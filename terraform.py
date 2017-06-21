@@ -373,7 +373,7 @@ def openstack_host(resource, module_name):
         'region': raw_attrs.get('region', ''),
         'security_groups': parse_list(raw_attrs, 'security_groups'),
         # ansible
-        'ansible_ssh_port': 22,
+        'ansible_port': 22,
         # workaround for an OpenStack bug where hosts have a different domain
         # after they're restarted
         'host_domain': 'novalocal',
@@ -407,15 +407,15 @@ def openstack_host(resource, module_name):
     })
 
     # add groups based on attrs
-    groups.append('os_image=' + attrs['image']['name'])
-    groups.append('os_flavor=' + attrs['flavor']['name'])
-    groups.extend('os_metadata_%s=%s' % item
-                  for item in attrs['metadata'].items())
-    groups.append('os_region=' + attrs['region'])
+    # groups.append('os_image=' + attrs['image']['name'])
+    # groups.append('os_flavor=' + attrs['flavor']['name'])
+    # groups.extend('os_metadata_%s=%s' % item
+    #               for item in attrs['metadata'].items())
+    # groups.append('os_region=' + attrs['region'])
 
-    # groups specific to Mantl
-    groups.append('role=' + attrs['metadata'].get('role', 'none'))
-    groups.append('dc=' + attrs['consul_dc'])
+    # # groups specific to Mantl
+    # groups.append('role=' + attrs['metadata'].get('role', 'none'))
+    # groups.append('dc=' + attrs['consul_dc'])
 
     return name, attrs, groups
 
@@ -801,6 +801,7 @@ def main():
         parser.exit()
 
     hosts = iterhosts(iterresources(tfstates(args.root)))
+
     if args.list:
         output = query_list(hosts)
         if args.nometa:
